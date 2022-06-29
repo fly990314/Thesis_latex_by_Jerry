@@ -12,6 +12,7 @@
 \usepackage{color}
 \definecolor{bisque}{rgb}{.996,.891,.755}
 
+% 設定頁面留白寬度(gene 2.5cm 可改成1cm)
 \usepackage[top=2.5cm,bottom=2.75cm,left=2.5cm,right=2.5cm]{geometry}   %設定頁面留白
 
 \usepackage[boldfont,slantfont,CJKnumber,CJKspace]{xeCJK}	%xeCJK套件
@@ -68,7 +69,6 @@
 \input{3-thanks.tex}											%誌謝
 \newpage
 
-
 \addcontentsline{toc}{chapter}{目錄}
 \tableofcontents 											%引入目錄
 \newpage
@@ -83,6 +83,7 @@
 \listoffigures												%引入圖目錄
 \newpage													%換新頁
 
+
 \addcontentsline{toc}{chapter}{程式碼目錄}
 \renewcommand{\numberline}[1]{\loclabel~#1\hspace*{1em}}
 \lstlistoflistings
@@ -93,13 +94,13 @@
 \input{chapter1.tex}
 \input{chapter2.tex}
 \input{chapter3.tex}
-\input{chapter4.tex}
+% \input{chapter4.tex}
 \input{chapter5.tex}
-\input{chapter6.tex}
 \vfill
 \newpage
-\addcontentsline{toc}{chapter}{參考文獻}
 
+\addcontentsline{toc}{chapter}{參考文獻}
+\renewcommand{\numberline}[1]{\loclabel~#1\hspace*{1em}}
 \bibliographystyle{unsrt}
 \bibliography{reference}
 

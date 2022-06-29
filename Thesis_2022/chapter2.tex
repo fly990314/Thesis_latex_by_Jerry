@@ -1,125 +1,143 @@
 \chapter{背景知識}
 
-\section{Refactoring}
+\section{HyperText Markup Language(HTML)}\label{s2.1}
 \indent
-Refactoring\cite{RefactoringBook}通常被定義為「在不改變程式碼外在行為的前提下，改善既有程式碼內部架構的過程」，當專案越加龐大時，內部程式碼的架構將會因為不同的需求而產生不一樣的設計，時間久了就會使專案程式碼越來越不可讀甚至難以擴充，在此種狀況下，為了提升程式碼的品質，儘管程式能夠正常運作，仍然需要為其重構，在開發人員確保程式行為一致的前提下，調整內部的設計，以此達到重構的目的。
-
-\indent
-重構測試程式碼與重構一般程式碼也有所不同，在重構一般程式碼時，會著重在內部架構的設計，讓其未來被使用及維護上都更加地容易，並且重構後可以透過單元測試檢查該次重構是否正確；而重構測試程式碼時，則是根據每個測試當下的狀況，判斷其設計是否符合當時所需來進行調整，或是改變測試的順序讓整體運作上能夠更加地順暢，重構完成後可以再次執行與該次重構相關的測試，確認其與重構前的行為是一致的。儘管兩者有不同之處，但其最終目的皆是希望讓整體程式碼的設計更加完善，進而提升程式碼的品質。
-
-%\indent
-%Refactoring\cite{RefactoringBook}通常被定義為「在不改變程式碼外在行為的前提下，改善既有程式碼內部架構的過程」，在過程中，不針對既有的錯誤進行修改，也不新增額外的功能，完全只專注於改善程式碼的內部設計，提高整體程式的品質，使其未來被使用及維護上都更加地容易。
-%
-%\indent
-%Refactoring: Improving the Design of Existing Code\cite{RefactoringBook}一書中有介紹常用的重構方法，其中包含較簡單的重構方法，例如：重新命名變數、函數、移動函數等等，以及較複雜的重構方法，例如：將程序設計轉化為物件設計。程式開發人員能夠利用這些已知的方法，針對其需要改善的程式碼進行重構，讓重構過程能夠更加順利且容易，進而提高整體內部設計的品質。
-
-\section{Robot Framework}\label{s2.2}
-\indent
-Robot Framework是一個基於Python\cite{python}所開源的自動化框架，通常被使用於開發驗收測試及驗收測試驅動開發(Acceptance test-driven development)\cite{ATDD}、行為驅動開發(Behavior-driven development)\cite{BDD}。由於關鍵字驅動測試(Keyword-driven testing)\cite{robotframework}的特色，開發人員能夠使用簡單且較容易理解的關鍵字撰寫測試腳本，讓整體具備極高的可讀性及降低開發的門檻，並且開發人員能夠將多個關鍵字包裝成更高階的關鍵字，使測試腳本閱讀起來更加地接近自然語言。
-
-\indent
-Robot Framework同時也擁有極佳的可擴充性，除了能夠使用官方及外部函式庫所提供的關鍵字以外，當開發人員遭遇現有關鍵字無法滿足開發需求時，也能夠透過Python或Java自行擴充所需的函式庫，滿足新關鍵字的需求。此外Robot Framework提供了公開的API(Application Programming Interface)\cite{RobotFrameworkAPI}，例如：針對現有的測試腳本進行解析、調整測試腳本執行的結果等等，讓開發人員能夠依照需求自行製作其他的功能，使設計測試腳本的過程能夠更加彈性。程式碼\ref{l2.1}為Robot Framework 測試腳本之實例
-
-\begin{lstlisting}[caption=Robot Framework 實例腳本, label={l2.1}]
-*** Settings ***
-Library     SeleniumLibrary
-Resource    ../microsoft.txt
-
-Test Setup    Go To English Microsoft
-
-*** Variables ***
-@{welcomeTaipei} =    Welcome    To    Taipei
-
-*** Test Cases ***
-Go To "Windows Security" Page And Log Welcome Text
-    Go To Windows Page
-    Open Windows 10 Menu
-    Go To "Windows Security" Page
-    "Windows Security" Page Should Be Visible
-    FOR    ${var}    IN    @{welcomeTaipei}
-        Log Double Text    ${var}
-    END
-    [Teardown]    Close Browser
-    
-*** Keywords ***
-Go To English Microsoft 
-    Go To Microsoft
-    Open Language Option
-    Select English Language
-\end{lstlisting}
-
-\section{抽象語法樹}\label{s2.3}
-\indent
-抽象語法樹(Abstract Syntax Trees)\cite{AST}是程式碼結構的一種抽象表達，利用樹狀結構展現出程式中的語法關係，每個節點分別表示程式碼中的一種結構，但不會將語法中的細節完全呈現，例如：Java中利用括號所表示的領域區分，在節點中並不會被呈現、條件式判斷則以節點下的分支進行表示，並非表示在節點之中。
-
-\indent
-在Python中，開發人員能夠透過AST套件\cite{ASTmodule}開發與抽象語法樹相關的程式碼，對於當前程式碼在語法層面的操作及檢視都提供了十分大的幫助。套件中提供了parse相關的輔助函數，可以讓開發人員更簡單地取得所需的語法樹，此外也提供了方便開發人員訪問各節點的可繼承類別，例如：NodeVisitor、NodeTransformer，讓開發人員能夠依照需求，自行新增含有不同功能的類別，運用上擁有較大的彈性。當其運用在Robot Framework上時，其可搭配Robot Framework提供的公開API，將測試檔案解析成抽象語法樹(AST)模型，讓開發人員在對於測試腳本及測試資源的存取上都更加地簡單。
-
-
-%\subsection{抽象語法樹應用於Robot Framework}\label{s2.3.2}
-%\indent
-%Robot Framework提供了公開的API，其可將測試檔案解析成抽象語法樹(AST)模型，搭配Python中AST套件，讓開發人員在對於測試腳本及測試資源的存取上都更加地簡單。因此開發人員能夠調整Robot Framework API的使用方法，且使用繼承AST套件中訪問節點功能及含有其他需求功能的類別，以此達成不同需求中的目的，使整體有較廣泛的運用。
-
-%\begin{lstlisting}[caption=解析測試腳本實例, label={l2.3}]
-%import ast
-%from robot.api import get_model
-%
-%
-%class TestCaseNamePrinter(ast.NodeVisitor):
-%
-%    def visit_File(self, node):
-%        print('File ' + node.source + ' has following tests:')
-%        self.generic_visit(node)
-%    
-%    def visit_TestCaseName(self, node):
-%        print(f"- {node.name} on line {node.lineno}")
-%
-%model = get_model('example.robot')
-%printer = TestCaseNamePrinter()
-%printer.visit(model)
-%\end{lstlisting}
-%
-%\begin{figure}[H]
-%    \centering
-%    \includegraphics[width=0.7\textwidth]{picture/parsing_example_2.PNG}
-%    \caption{解析測試腳本實例結果}
-%    \label{f2.5}
-%\end{figure}
-
-\section{Eclipse}\label{s2.4}
-\indent
-團隊開發測試腳本所使用之整合式開發環境(RED)是基於Eclipse所開發出來的，而Eclipse\cite{Eclipse}是一個跨平台的開源整合式開發環境，起初是以開發Java作為主要目的，後續透過外掛程式的擴展，可使其成為其他語言的開發工具，例如：C++、PHP、Python等等。Eclipse僅以圖形API、Java開發環境、外掛程式開發環境等作為基礎核心，其餘功能則一律以外掛程式的方式附加於核心之上，例如：圖形編輯器、複雜重構、版本控制等等功能。
-
-\indent
-由於Eclipse除了核心以外，其餘皆為外掛程式，使其具有良好的擴充性，更重要的是，平台定義了十分明確的機制，讓不同的外掛程式可以利用延伸點(extension points)及貢獻(contribute)相互合作，既存的功能能夠被新功能使用，而新功能也可以輕鬆地整合於平台之中。圖\ref{f2.6}為Eclipse平台之架構\cite{EclipseStructure}
+標記式語言(Markup Lanaguage)是一種利用電腦看得懂的標示符號來定義出一份資料會如何呈現在畫面中，
+而超文本標記語言(HyperText Markup Language)，簡稱HTML，則是用於建立網站的標記式語言，
+透過網頁瀏覽器的讀取，可以將其轉換成視覺化的網站。
+雖然它不算是程式語言的一種，卻是架構網站的重要根基。
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{picture/eclipse_structure.png}
-    \caption{Eclipse外掛式架構\cite{EclipseStructure}}
-    \label{f2.6}
+    \includegraphics[width=0.55\textwidth]{picture/ch2-htmlExample.png}
+    \caption{HTML檔案範例}
+    \label{f2.1}
 \end{figure}
 
-\newpage
-\section{Jython}
+\section{Node.js}\label{s2.2}
+Node.js是一個能夠在伺服器端執行JavaScript的Open Source跨平台執行環境，讓JavaScript這種程式語言不僅僅只能在操作使用者端的程式碼。
+它是讓使用者把僅能在瀏覽器執行JavaScript的限制，改成可以透過電腦中的終端介面來直接執行JavaScript程式碼。
+而node.js是一個輕量的framework，它裡面的每個JavaScript檔案都會被視為一個module，使用者可以用可下載的或可自己撰寫的模組來實現自己想要的功能。
+
+\subsection{cherrio}\label{s2.2.1}
+cherrio是在Node.js的一個模塊，實現了把jQuery中Selector輕量化的功能，需要先讀入HTML進行解析，並使用選擇器找出所需要的元件節點來作客置化的操作。
+例如:若需要進行爬蟲的話，需要先讀入一整個完整的網頁HTML，並限制元件的條件來找出該元件來讀出該文字內容。
+
+\subsection{Diff}\label{s2.2.2}
+Diff是在Node.js的一個模塊，本論文取用的Hiff開源程式庫是以該模塊為基礎而開發的，利用其中的API來做兩個參數中的比較並顯出是否有差異，參數的類型可以是字元陣列...等等不同類別。
+
+\section{DOM-based Locators}\label{s2.3}
+如果要去抓取網頁其中一個物件，並使我們可以透過程式對它進行各式各樣的操作，
+方法基本上可以分類成三種:
+
 \indent
-Jython\cite{Jython}是一個利用Java所撰寫的Python直譯器，在任何支援JVM\cite{JVM}(Java virtual machine)的環境上皆可使用，也代表著能夠使用JVM中的Java函式庫。Jython提供開發人員在開發過程中能夠自由地混用Java及Python兩種不同的語言，使開發能夠更加地彈性。
+1. Coordinate-based locators: 使用座標定位。
 
-\begin{lstlisting}[caption=Jython於Python語言環境中執行Java之實例, label={l2.4}]
-from java.lang import System
+\indent
+2. DOM(Document Object Model)-based locators: 使用文件物件模型(DOM)定位。
 
-current_java_version = System.getProperty('java.version')
-strInPython = "Current java version is " + current_java_version
-System.out.println(strInPython)
-\end{lstlisting}
+\indent
+3. Visual locators: 使用視覺定位，通常使用影像辨識技術。
 
-\begin{lstlisting}[caption=Jython於Java語言環境中執行Python之實例, label={l2.5}]
-import org.python.util.PythonInterPreter;
+\indent
+本論文中談論的情境是以穩定性較高的DOM-based locators來操作其中的物件，其中DOM在此指的是網頁中的樹狀結構HTML文件結構。
+而利用此定位實現的技術即為XPath (XML Path Language)。
 
-public class RunPythonInJava{
-    public static void main(String []args){
-        PythonInterPreter pyRunner = new PythonInterPreter();
-		pyRunner.exec("print('I am from python world!')");
-	}
-}
-\end{lstlisting}
+
+\section{XML Path Language (XPath)}\label{s2.4}
+XML Path Language (XPath) 是一種用來尋找XML文件中一個或多個節點位置的查詢語言。
+以XML中樹狀結構為基礎，讓使用者用一個附帶多個條件的表達式，找到是否有符合這些條件的路徑。
+
+\indent
+在Xpath表達式中，最常見的是路徑表達式。
+路徑表達式是從一個XML節點到另一個節點或一組節點的步驟順序。
+如下圖表示，從HTML起始節點「ul」到屬性id為second-level的節點「li」，再從節點「li」到節點「div」，
+其路徑表達式為\colorbox{lightgray}{/ul/li[@id="second-level"]/div}                                                                                                                                                                                                                                                   
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{picture/ch2-xpathExample.png}
+    \caption{HTML檔案範例}
+    \label{f2.2}
+\end{figure}
+
+路徑表達式通常由三個元件設定來組成的，
+以圖2.2的路徑表達式為例:
+
+\begin{itemize}
+\item[●] 一個 Axis。代表搜尋的方向，例如:路徑表達式中的\colorbox{lightgray}{/}
+\item[●] 一個 Node test。可以選擇指定或不指定特定的 HTML 的標籤名稱，例如表達式中的\colorbox{lightgray}{li}
+\item[●] 零個或多個 Predicate。描述搜尋節點的條件，藉此可以過濾出需要的節點，例如:\colorbox{lightgray}{/li[@id="second-level"]}
+\end{itemize}
+
+% 如圖XXX的HTML結構為例為例，如果需要利用Xpath來定位到[...]的element，將此架構利用這三個元件來一個Xpath表達式。
+% \begin{itemize}
+%     \item[●] Axis為\colorbox{lightgray}{//}，代表搜尋方向為父節點往子節點搜尋，並搜尋所有子孫節點。
+%     \item[●] 指定節點名稱為 div 的節點
+%     \item[●] 限制該節點有屬性class且屬性值為XXX
+% \end{itemize}
+
+% (上述的例子需要補上一張圖)
+
+\section{Chrome Developer tools}\label{s2.5}
+基於桌機瀏覽器市占排行，本論文選用市佔率第一個Chrome使用。
+在瀏覽器的頁面中，可以點擊功能鍵F12，即可打開它的頁面。
+本工具最常用的四個功能模塊為:
+\begin{itemize}
+    \item[●] 元素（Elements）:主要可以展示出該網站的當下HTML檔，以及每個元素對應的CSS屬性...等等細部設定，也可以及時修改當下的檔案，查看若更改會有什麼情況。
+    \item[●] 控制台（Console）:類似作業系統中的命令提示字元，可以在以網頁的形式讓電腦傳遞給我們一些資訊，例如:輸入Xpath查看是否有定位到該物件以及程式中若需要輸出字元字串，則會在這個頁面下呈現...等等功能。
+    \item[●] 源代碼（Sources）:從該頁面可以知道該網站的HTML、Javascrpit和CSS...等等程式，也可以從這裡設定斷點，來增加Debug的效率。
+    \item[●] 網路（Network）:在網站運行時，可以透過該頁面觀察此網頁和伺服器傳遞Request的情況，也可以手動調整網路的速度來檢測網站的穩定性。
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{picture/ch2-chromeDeveloperTool.png}
+    \caption{Chrome Developer Tool頁面範例}
+    \label{f2.3}
+\end{figure}
+
+\section{Chrome Extension}\label{s2.6}
+
+瀏覽器除了有本身基本的功能之外，如果使用者還有其他需求的話，可以去網路商城下載擴充套件或自己撰寫相關程式來讓瀏覽器可以達到使用者額外的需求。
+一般來說擴充元件都是用諸如HTML、CSS和JavaScript的網路技術，另外有些還會透過瀏覽器的API來做溝通及變換畫面。
+例如:目前市面上有很多人使用網頁版的Google翻譯來解決一般人難以讀懂英文文章的困擾，
+但每次都需要跳轉到網頁才可以翻譯，
+Google翻譯擴充套件能讓使用者在當下的畫面把文字圈選起來，利用程式判斷出圈起來文字並進行翻譯，
+最後在該頁面的HTML增添一些元件來顯示出翻譯的結果供讀者參考。
+
+\subsection{輸入元件}\label{s2.6.1}
+Chrome瀏覽器提供能讓使用者和網頁互動的元件，有畫面可見的瀏覽器按鈕和網頁中內容...等等UI元素，也有畫面中的右鍵功能選單和快捷鍵...等等被隱藏的區塊。
+
+\subsection{安裝檔Manifest.josn}\label{s2.6.2}
+作為擴充元件的安裝檔，內部記錄了很多很多重要的程式路徑以及權限設定...等等的相關資訊，
+若需要將此擴充元件安裝在瀏覽器中使用，需要透過載入此檔案，讓瀏覽器可以支援此程式包的運算邏輯。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{picture/ch2-manifest.png}
+    \caption{Manifest安裝檔範例}
+    \label{f2.4}
+\end{figure}
+
+\subsection{內部腳本}\label{s2.6.3}
+在擴充元件的架構中，根據不同的時機，也有不同的腳本來專門處理同類型的事件，以下列出常用腳本所負責的功能:
+\begin{itemize}
+    \item[●] Background Script: 一個擴充元件中，專門在背景頁面中執行的腳本，通常是處理程式中的主要邏輯。
+    \item[●] Content Script: 在每個網頁頁面(Tab)中，和擴充元件溝通的管道，該腳本會被瀏覽器放入當下頁面的HTML裡面。
+    \item[●] Popup Script:瀏覽器中右上角有個擴充元件的頁面按鈕，內部有個獨立的頁面，可以在裡面處理獨立的資訊和畫面。
+\end{itemize}
+不同的腳本中都有獨立的Scope，可以在內部存儲變數，但它們是不能直接存取對方的資料的，
+例如:
+Popup Script想要Background Script運算完的結果，
+但他們無法互享溝通傳遞變數資料，只能透過Chrome中提供的通訊API，
+利用Popup Script告訴Background Script想要你的資料，
+Background Script才知道需要運算了並運算結束後結果回傳給Popup.js。
+
+\indent
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{picture/ch2-extension-script.png}
+    \caption{Manifest安裝檔範例}
+    \label{f2.5}
+\end{figure}
