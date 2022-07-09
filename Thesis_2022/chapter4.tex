@@ -1,243 +1,240 @@
 \chapter{案例分析}
-\section{案例實驗設計}
+\section{案例實驗設計}\label{s4.1}
 \indent
-本論文將以自行設計之Microsoft網頁相關測試專案作為實驗腳本，其中含有十一個測試套件、七個測試資源，是屬於規模較小的測試專案，此實驗將以團隊最常使用的Visual Studio Code搜尋取代工具及擴充後之RF Refactoring進行重構，其重構方法為抽取測試腳本之重複步驟成為新關鍵字及移動關鍵字宣告兩種。
+本論文以免費模板網頁Free CSS中的其中一個模板當基礎，
+在原有的設計下做小幅度的修改，以此來作為此實驗的實驗網頁。
+我們挑選出五個在撰寫測試腳本時時常會遇到的情況，
+將情況設計成實驗案例來讓實驗人員實際操作。
 
-\indent
-本論文將參考陳昱仁論文\cite{Experiment_Settings}實驗分析中的實驗設計方法，邀請國立台北科技大學軟體系統實驗室之測試團隊成員，協助使用兩種工具進行重構並比較其時間差異，以此確認擴充後之重構工具對於團隊是否有實質之幫助。在開始測驗之前，將會帶領每位測試人員了解該測試專案所要測試的網頁內容，使其對測試專案先有一定的了解。因為現有環境上的限制，只能請測試人員務必於只有一人的環境中進行測驗，並且確保其餘可能影響實驗準確性之外在因素皆不存在，例如：手機、通訊軟體等等，最後為每位測試人員解釋各個案例狀況後即開始進行測驗。
+在實驗人員的挑選中，
+我們找了有網頁測試相關經驗的和對此技術較為陌生兩種類別的人，
+最後會進行操作時間的比較。
+為因應目前疫情時間，測試環境為同一台電腦以及硬體配備，
+若為實體操作的話現場操作電腦，
+若為遠端操作的話則使用Window遠端連線到該電腦來進行操作，
+為確保實體和遠端的操作環境相同，遠端設備皆有檢測網速在50Mbps以上，並不會有遲鈍的現象。
+操作的鍵盤滑鼠均屬於自己平時在使用的設備，
+使用的介面為Chrome瀏覽器，工具為Chrome劉覽器中的Developer Tools和本實驗提出的擴充元件。
 
-\section{案例一：抽取測試腳本中的重複步驟成為新關鍵字並引入所需測試資源}\label{s5.1}
-\indent
-程式碼\ref{l5.1}為測試專案的測試套件之一，其含有一個測試案例，用來測試前往Windows安全性頁面之功能，並且測試其功能正常後，於報表中印出歡迎相關之訊息。程式碼\ref{l5.2}同為測試專案中的測試套件，同樣含有一個測試案例，用來測試前往Windows10功能頁面之功能，於功能驗證完成後，在報表中印出歡迎相關之訊息。
+實驗流程開始前，
+會先對測試人員用同一個簡報簡易說明該論文的背景知識、測試目的以及實驗網頁的簡單介紹，
+之後會操作一個簡易的範例給實驗人員觀摩並且給實驗人員親自操作來熟悉該工具，
+等一切初始程序就位後才會開始操作實驗案例，並記錄操作時間。
 
-\indent
-比對程式碼\ref{l5.1}(18-20行)及程式碼\ref{l5.2}(18-20行)可以發現，其在於功能驗證後都會印出歡迎相關之訊息，因此可以將它們認定為重複步驟並進行重構。此測試專案中共有四個測試案例都擁有重複之步驟，需要將其抽取成新關鍵字並取代後，引入其所需之測試資源，因此本論文邀請五位測試團隊成員依照下列小節之方式，進行相對應之重構，並於後續比較其使用差異。
-
-\begin{lstlisting}[caption=前往Windows安全性頁面之測試套件, label={l5.1}]
-9   *** Variables ***
-10  @{welcomeTaipei} =    Welcome    To    Taipei
-11  
-12  *** Test Cases ***
-13  Go To "Windows Security" Page And Log Welcome Text
-14      Go To Windows Page
-15      Open Windows 10 Menu
-16      Go To "Windows Security" Page
-17      "Windows Security" Page Should Be Visible
-18      FOR    ${var}    IN    @{welcomeTaipei}
-19          Log Double Text    ${var}
-20      END
-21      [Teardown]    Close Browser
-\end{lstlisting}
-
-\begin{lstlisting}[caption=前往Windows10功能頁面之測試套件, label={l5.2}]
-9   *** Variables ***
-10  @{welcomeTainan} =    Welcome    To    Tainan
-11
-12  *** Test Cases ***
-13  Go To "Windows 10 features" Page And Log Welcome Text
-14      Go To Windows Page
-15      Open Windows 10 Menu
-16      Go To "Windows 10 features" Page
-17      "Windows 10 features" Page Should Be Visible
-18      FOR    ${var}    IN    @{welcomeTainan}
-19          Log Double Text    ${var}
-20      END
-21      [Teardown]    Close Browser
-\end{lstlisting}
-\newpage
-
-\subsection{使用Visual Studio Code搜尋取代工具}\label{s5.1.1}
-\indent
-首先利用Visual Studio Code(VSCode)將重複步驟複製至目標測試資源中，以其做了什麼為新關鍵字之名稱，且將未宣告於步驟內之變數作為新關鍵字之參數，藉此創立新關鍵字，結果如程式碼\ref{l5.3}。後續於搜尋工具中，以重複步驟之關鍵字為搜尋目標，搜尋結果如圖\ref{f5.1}所示，其中一個搜尋結果為關鍵字之宣告，非所需之重複步驟故不取代，其餘四個結果分別與重複步驟之參數數量、關鍵字順序及關鍵字名稱相同，因此以新關鍵字進行取代。
-
-\indent
-後續於已進行重複步驟取代之測試套件，檢查其是否有引入新關鍵字所需之測試資源，為未引入者進行引入之動作。
-
-\begin{lstlisting}[caption=新關鍵字架構, label={l5.3}]
-Log Welcome Text
-    [Arguments]    ${welcomeTexts}
-    FOR    ${var}    IN    @{welcomeTexts}
-        Log Double Text    ${var}
-    END
-\end{lstlisting}
-
-\begin{figure}[H]
-   \centering
-   \includegraphics[width=0.9\textwidth]{picture/ch5/vscode_search_in_case1.PNG}
-   \caption{重複步驟搜尋結果}
-   \label{f5.1}
-\end{figure}
-
-%\begin{figure}[H]
-%	\centering
-%	\begin{minipage}[b]{0.43\textwidth}
-%		\includegraphics[width=1.05\textwidth]{picture/ch5/After_replace_with_new_keyword_in_case1.png}
-%		\caption{關鍵字取代重複步驟後結果}
-%		\label{f5.2}
-%	\end{minipage}
-%	\begin{minipage}[b]{0.53\textwidth}
-%		\centering
-%		\includegraphics[width=0.85\textwidth]{picture/ch5/Import_resource_in_case1.png}
-%		\caption{引入新關鍵字所需之測試資源結果}
-%		\label{f5.3}
-%	\end{minipage}
-%\end{figure}
-
-\subsection{使用擴充後之RF Refactoring}\label{s5.1.2}
-\indent
-後續使用擴充後之RF Refactoring的Wrap Steps As A New Keyword功能重構\ref{s5.1}節所提及之重複步驟，選取其中一個測試套件中的重複步驟，其將會自動把未宣告於步驟中的變數加入新關鍵字的參數，如圖\ref{f5.4}所示，於此視窗可以同時決定新關鍵字之名稱，並且創立新關鍵字於圖\ref{f5.5}視圖中所選擇之檔案。根據專案下所檢查出含有重複步驟的測試套件，其可在圖\ref{f5.6}之視圖中選擇要以新關鍵字取代之重複步驟，並且為每個要使用的新關鍵字決定其參數實際值，以此完成重複步驟之取代，最後RF Refactoring將自動引入新關鍵字所需之測試資源。
+\section{測試案例實作}\label{s4.2}
+挑選模板中，以互動功能多的網站為第一優先條件。
+在眾多模板多，使用以家具為主的網頁模板\cite{Furn-Free-CSS-Template}來做實驗對象。
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{picture/ch5/Eclipse_create_keyword_in_case1.png}
-    \caption{創立新關鍵字視窗結果}
-    \label{f5.4}
+    \includegraphics[width=0.9\textwidth]{picture/experiment/test-environment-demo.png}
+    \caption{實驗模板網站}
+    \label{f4.1}
 \end{figure}
+
+\indent
+
+\subsection{案例一：Hover購物車圖示後出現購物車下拉式畫面}\label{s4.2.1}
+\indent
+實驗者的測試情境為將滑鼠放在購物車的圖示上，
+等到下拉式畫面出現後，需要找出所有因為下拉式畫面而屬性出現變化的元件，，如圖\ref{f4.2}所示。
+
+該案例共有兩個元件有屬性變化，如果測試者皆找出變化並指出在Dev Tools中的位置則計為成功並記錄秒數。
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{picture/ch5/Eclipse_choose_file_to_create_keyword_in_case1.png}
-    \caption{專案下檔案顯示視圖結果}
-    \label{f5.5}
+    \includegraphics[width=0.6\textwidth]{picture/experiment/test-environment-no1.png}
+    \caption{Hover購物車圖示後出現下拉示畫面之網頁變化}
+    \label{f4.2}
 \end{figure}
+
+\subsection{案例二:點擊搜尋框後，僅需要了解該元件屬性變化}\label{s4.2.2}
+\indent
+實驗者的測試情境為利用點擊搜尋圖標後，可以將隱藏的搜尋框展開，
+並找出有因為此互動而有變化的元件，如圖\ref{f4.3}所示。
+
+該案例需要找出一個指定元件的屬性變化，如果測試者皆找出變化並指出在Dev Tools中的位置則計為成功並記錄秒數。
+
+在此情境中，使用者可以使用擴充元件中"Only display change of current selecting elemnt"的Option，
+讓測試者可以利用該Option過濾掉其餘畫面中不是搜尋框的變化並指出在Dev Tools中的位置，讓使用者專注在指定元件的屬性中。
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{picture/ch5/Eclipse_choose_duplicate_steps_in_case1.png}
-    \caption{搜尋重複步驟結果之視圖}
-    \label{f5.6}
+    \includegraphics[width=0.6\textwidth]{picture/experiment/test-environment-no2.png}
+    \caption{點擊搜尋圖包後之網頁變化}
+    \label{f4.3}
 \end{figure}
 
-%\begin{figure}[H]
-%	\centering
-%	\begin{minipage}[b]{0.43\textwidth}
-%		\includegraphics[width=1.05\textwidth]{picture/ch5/Eclipse_replace_result_in_case1.png}
-%		\caption{關鍵字取代重複步驟後結果}
-%		\label{f5.7}
-%	\end{minipage}
-%	\begin{minipage}[b]{0.53\textwidth}
-%		\centering
-%		\includegraphics[width=0.85\textwidth]{picture/ch5/Eclipse_Import_resource_result_in_case1.png}
-%		\caption{引入新關鍵字所需之測試資源結果}
-%		\label{f5.8}
-%	\end{minipage}
-%\end{figure}
-
-\subsection{重構工具使用之比較}
-
-\begin{table}[H]
-    \begin{center}
-    \caption{使用兩種工具包裹重複步驟成為新關鍵字並引入所需測試資源之比較}\label{t5.1}
-        \begin{tabular}{|c|c|c|}\hline
-                             & 使用VSCode重構花費之時間    & 使用擴充後之RF Refactoring重構花費之時間    \\\hline
-        測試人員1           & 06m02s          & 03m24s    \\\hline
-        測試人員2           & 05m12s          & 04m20s    \\\hline
-        測試人員3           & 07m31s          & 04m20s    \\\hline
-        測試人員4           & 06m20s          & 04m59s    \\\hline
-        測試人員5           & 06m29s          & 06m07s    \\\hline
-\textbf{平均時間}           & \textbf{06m18s} & \textbf{04m38s}    \\\hline
-        \end{tabular}
-    \end{center}
-\end{table}
+\subsection{案例三：網頁中畫面定時更換內容}\label{s4.2.3}
 \indent
-表\ref{t5.1}為紀錄團隊測試人員使用兩種不同工具進行此重構之比較，從表中可見每一位測試人員根據經驗之不同，使用VSCode進行重構所花費之時間也略微不同，平均大約花費了6分18秒，並且重構過程中，測試人員有三位不小心忽視了新關鍵字所需之測試資源，導致測試失敗；而使用擴充後之RF Refactoring重構時，平均大約花費了4分38秒，並且未有測試資源沒被引入之狀況發生。由此比較可發現，使用擴充後之RF Refactoring進行此重構時，因為不需要手動搜尋重複步驟以及檢查所需之測試資源是否引入，能夠花費較少的時間，其大約減少了26.4\%的時間，並且較不容易發生錯誤。
+實驗者的測試情境為在網頁中的產品促銷頁面定時會更換的情況下，找出因為畫面更換而屬性出現變化的元件。
+在此產品促銷頁面中，有三個子頁面，裡面各有一個促銷商品。
+若使用者的滑鼠鼠標沒有在促銷頁面上，
+它會定時滑動並道不同的內容中，
+讓使用者即使不用操作頁面也可以看到每個在頁面上的促銷商品，如圖\ref{f4.4}所示。
 
-\section{案例二：移動測試資源中的關鍵字宣告並引入所需測試資源}\label{s5.2}
-\indent
-程式碼\ref{l5.4}為測試專案的測試套件之一，其中第5行之Go To Microsoft關鍵字於其他測試套件剛好也需要使用，因此必須將其之宣告移動至共用之測試資源，以便其他測試套件使用。在移動到目標測試資源後，必須檢查原先已使用此關鍵字之四個測試套件是否都有引入其所需之測試資源，避免發生未宣告關鍵字之錯誤。
-
-\indent
-根據此案例之重構，本論文邀請與\ref{s5.1}節相同之五位測試團隊成員使用下列小節之方式，進行相對應之重構，最後比較其使用差異。
-
-\begin{lstlisting}[caption=前往如何取得Windows10頁面之測試套件, label={l5.4}]
-1   *** Settings ***
-2   Library     SeleniumLibrary
-3   Resource    ../microsoft.txt
-4
-5   Test Setup    Run Keywords    Go To Microsoft
-6   ...    AND    Open Language Option
-7   ...    AND    Select English Language
-
-8   *** Variables ***
-9   @{welcomeKaohsiung} =    Welcome    To    Kaohsiung
-10
-11  *** Test Cases ***
-12  Go To "How To Get Windows 10" Page And Log Welcome Text
-13      Go To Windows Page
-14      Open Windows 10 Menu
-15      Go To "How To Get Windows 10" Page
-16      "How To Get Windows 10" Page Should Be Visible
-17      Log Welcome Text    ${welcomeKaohsiung}
-18      [Teardown]    Close Browser
-\end{lstlisting}
-
-\subsection{使用Visual Studio Code搜尋取代工具}
-\indent
-首先利用VSCode將需要移動之關鍵字宣告於其所在檔案中移除，並在共用測試資源上完整複製遭移除之關鍵字宣告，後續於搜尋工具之視窗，以被移動之關鍵字名稱進行搜尋，搜尋結果如圖\ref{f5.9}所示，其中一個搜尋結果為關鍵字之宣告的，故不需檢查，其餘結果皆為原先已使用此關鍵字之測試套件。接著於每個測試套件中搜尋是否有引入共用之測試資源，如否則為其引入以避免測試錯誤。
+該案例需要找出四個元件的屬性變化，如果測試者皆找出變化並指出在Dev Tools中的位置則計為成功並記錄秒數。
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.35\textwidth]{picture/ch5/Search_using_keyword_in_case2.png}
-    \caption{搜尋使用被移動關鍵字之測試套件結果}
-    \label{f5.9}
+    \includegraphics[width=0.7\textwidth]{picture/experiment/test-environment-no3.png}
+    \caption{產品促銷頁面循環示意圖}
+    \label{f4.4}
 \end{figure}
 
-%\begin{figure}[H]
-%	\centering
-%	\begin{minipage}[b]{0.5\textwidth}
-%		\includegraphics[width=0.8\textwidth]{picture/ch5/Import_resource_in_case2.png}
-%		\caption{引入關鍵字所需之測試資源結果}
-%		\label{f5.10}
-%	\end{minipage}
-%	\begin{minipage}[b]{0.48\textwidth}
-%		\centering
-%		\includegraphics[width=1.2\textwidth]{picture/ch5/Move_keyword_result_in_case2.png}
-%		\caption{關鍵字宣告移動之結果}
-%		\label{f5.11}
-%	\end{minipage}
-%\end{figure}
 
-\subsection{使用擴充後之RF Refactoring}
+\subsection{案例四：點擊上方導覽列跳轉到該類別畫面}\label{s4.2.4}
 \indent
-接著使用擴充後之RF Refactoring的Move Keyword Defined To Another File功能重構\ref{s5.2}節所提及的需移動之關鍵字宣告，選取其關鍵字名稱後，即可將關鍵字宣告移動至圖\ref{f5.12}視圖中所選取之目標檔案，後續RF Refactoring將自動為原先已使用此關鍵字之測試套件引入所需測試資源。
+實驗者的測試情境為點擊網頁上方的導覽列，可以快速跳轉到該網頁的指定區塊，讓使用者不用花費多餘的時間尋找該區塊在頁面中的位置，如圖\ref{f4.5}所示。
+
+一般在畫面快速跳轉的情況下，無法快速地知道那些元件屬性有改變到，且必須要從整個網頁中慢慢尋找，會花相對多的時間在找差異，
+透過此工具，可以快速地找到差異，並給測試者查看是否適合當Xpath表達式的條件。
+
+該案例需要找出四個元件的屬性變化，如果測試者皆找出變化並指出在Dev Tools中的位置則計為成功並記錄秒數。
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{picture/ch5/Eclipse_choose_file_in_case2.png}
-    \caption{專案下全部測試檔案之視圖}
-    \label{f5.12}
+    \includegraphics[width=0.5\textwidth]{picture/experiment/test-environment-no4.png}
+    \caption{利用導覽列跳轉到其他畫面之示意圖}
+    \label{f4.5}
 \end{figure}
 
-%\begin{figure}[H]
-%	\centering
-%	\begin{minipage}[b]{0.48\textwidth}
-%		\centering
-%		\includegraphics[width=0.9\textwidth]{picture/ch5/Eclipse_import_resource_in_case2.png}
-%		\caption{引入關鍵字所需測試資源之結果}
-%		\label{f5.13}
-%	\end{minipage}
-%	\begin{minipage}[b]{0.5\textwidth}
-%		\includegraphics[width=1.2\textwidth]{picture/ch5/Eclipse_move_keyword_result_in_case2.png}
-%		\caption{關鍵字宣告移動之結果}
-%		\label{f5.14}
-%	\end{minipage}
-%\end{figure}
-
-\subsection{重構工具使用之比較}
-
-\begin{table}[H]
-    \begin{center}
-    \caption{使用兩種工具移動關鍵字宣告並引入所需測試資源之比較}\label{t5.2}
-        \begin{tabular}{|c|c|c|}\hline
-                & 使用VSCode重構花費之時間 & 使用擴充後之RF Refactoring重構花費之時間    \\\hline
-        測試人員1      & 01m14s             & 00m26s    \\\hline
-        測試人員2      & 01m35s             & 00m18s    \\\hline
-        測試人員3      & 01m17s             & 00m22s    \\\hline
-        測試人員4      & 01m00s             & 00m26s    \\\hline
-        測試人員5      & 02m02s             & 00m41s    \\\hline
-\textbf{平均時間}      & \textbf{01m25s}    & \textbf{00m26s}    \\\hline
-        \end{tabular}
-    \end{center}
-\end{table}
 \indent
-表\ref{t5.2}為紀錄團隊測試人員使用兩種不同工具進行此重構之比較，從表中可發現，使用VSCode進行重構時，平均花費了1分25秒，且有兩位測試人員對於部分測試套件有錯誤引入關鍵字所需測試資源之相對路徑，導致測試錯誤；而使用擴充後之RF Refactoring重構時，平均花費了26秒，且引入所需測試資源之路徑皆為正確。從此比較可發現，使用擴充後之RF Refactoring進行此重構時，因為不需要自我檢查測試套件是否都有引入所需之測試資源，能夠花費較少的時間，其大約減少了69.4\%的時間，並且較不容易因人為檢查缺漏而發生錯誤。
+
+\subsection{案例五：互動後當下網頁畫面無變化}\label{s4.2.5}
+\indent
+實驗者的使用情境為點擊促銷頁面中的按鈕後，
+在當下畫面中因為變化中的元件沒有在畫面中，所以使用者在當下無法看不出有任何變化，也無法確保沒有任何元件被此點擊的動作影響到屬性。
+如圖\ref{f4.5}所示，點擊按鈕後下方的標題會新增一行額外的文字，因為當下畫面是沒有變化的，所以使用者較難找出差別。
+
+該案例需要找出一個被添加的元件，如果測試者找出變化並指出在Dev Tools中的位置則計為成功並記錄秒數。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{picture/experiment/test-environment-no5.png}
+    \caption{當下網頁中無包括有變化的元件之示意圖}
+    \label{f4.6}
+\end{figure}
+
+\section{實驗數據分析}\label{s4.3}
+\indent
+本次實驗共有14位實驗人員參與，分成無相關經驗的7位以及有相關經驗的7位，藉由實驗人員的操作時間來比較有無使用此工具之差別。
+
+由圖\ref{f4.7}可看出在實驗人員皆無相關經驗的情況下，
+若使用操作工具在五個實例的情況中，減少的時間皆有25\%以上，甚至實例五有高達70\%左右。
+% 減少時間:
+%實例一: 0.738
+%實例二: 0.516
+%實例三: 0.621
+%實例四: 0.675
+%實例五: 0.279
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{picture/experiment/ch4-no_experience_compare.png}
+    \caption{無實務經驗實驗人員操作時間比較}
+    \label{f4.7}
+\end{figure}
+
+由圖\ref{f4.8}可看出在實驗人員有相關經驗的情況下，
+實例二雖然時間很相近，
+但實例二的實作過程因為只要找尋一個元件的變化，有相關經驗的人平時在找尋條件時也都只會看當下的元件，所以實驗結果是可以預期的。
+其餘四個實例若使用操作工具減少的時間也有在20\%左右。
+
+% 減少時間:
+%實例一: 0.843
+%實例二: 0.934
+%實例三: 0.7084
+%實例四: 0.6943
+%實例五: 0.17788
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{picture/experiment/ch4-have_experience_compare.png}
+    \caption{有實務經驗實驗人員操作時間比較}
+    \label{f4.8}
+\end{figure}
+
+由圖\ref{f4.9}的全部實驗人員的時間統計下，可以看出每個實例都有減少20\%~30\%左右的時間，
+其中案例五在有經驗或無經驗的情況下，時間皆大幅減少，由此可以看出即使有經驗的實驗人員，也較難找出超出畫面外的元件變化。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{picture/experiment/ch4-all_compare.png}
+    \caption{全部實驗人員操作時間比較}
+    \label{f4.9}
+\end{figure}
+
+
+
+% 設備:   電腦+遠端(因應疫情關係)
+%         電腦採遠端，鍵盤滑鼠均採用自己習慣的    
+
+% 測試人員:預計人數14人
+% (有關專案*7)
+% (X)-> 華暄Josie 
+% (O)-> 彥文(OK)
+% (X)-> 方子元
+% (O)-> 陳志賢Larry)(OK)
+% (X)-> 大四專題生*3
+
+% (無關專案*7)(暫定)
+% (-)-> 大三專題生*2
+% (-)-> 碩零*2 (子龍 + 博士生)
+% (X)-> 新允
+% (O)-> 伯全(完成)
+% (O)-> 承岳
+
+% 設計情境 *  (本實驗僅只需要找出文本差異即可，不需要讓實驗者設計一個xpath表達式)
+
+% 1.
+
+% 測試目的:使用Navbar hover後文本出現的變化 (for timer功能)
+
+% 使用前+使用後時間:
+
+% 2.
+
+% 測試目的:點擊按鈕後，部分網頁出現之變化 (for add remove)
+
+% 使用前+使用後時間:
+
+% 3.
+
+% 測試目的: 點擊按鈕後，某個元件屬性出現變化(for change type)
+
+% 使用前+使用後時間:
+
+% 4.
+
+% 測試目的: 網頁往下移動，但元件沒有任何變化(for no change)
+
+% 使用前+使用後時間:
+
+% 5.
+
+% 測試目的: 點擊後有兩個元件會變化(一個只有style會變化，一個是部分屬性加style都會變化)(for style 變化)
+
+% 使用前+使用後時間:
+
+
+
+% 結果用表格呈現時間
+
+% 用圖表呈現(假設情境為5個)
+% 情境一
+
+% \begin{table}[H]
+%     \begin{center}
+%     \caption{使用兩種工具包裹重複步驟成為新關鍵字並引入所需測試資源之比較}\label{t5.1}
+%         \begin{tabular}{|c|c|c|c|}  \hline
+%         & 使用VSCode重構花費之時間    & 使用擴充後之RF Refactoring重構花費之時間    & 123   \\\hline
+%         人員1           & 06m02s          & 03m24s    \\\hline
+%         人員2           & 05m12s          & 04m20s    \\\hline
+%         人員3           & 07m31s          & 04m20s    \\\hline
+%         人員4           & 06m20s          & 04m59s    \\\hline
+%         人員5           & 06m29s          & 06m07s    \\\hline
+%         \textbf{平均時間}           & \textbf{06m18s} & \textbf{04m38s}    \\\hline
+%         \end{tabular}
+%     \end{center}
+% \end{table}

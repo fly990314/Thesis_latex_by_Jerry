@@ -2,7 +2,7 @@
 
 \section{HyperText Markup Language(HTML)}\label{s2.1}
 \indent
-標記式語言(Markup Lanaguage)是一種利用電腦看得懂的標示符號來定義出一份資料會如何呈現在畫面中，
+標記式語言(Markup Lanaguage)\cite{HTML}是一種利用電腦看得懂的標示符號來定義出一份資料會如何呈現在畫面中，
 而超文本標記語言(HyperText Markup Language)，簡稱HTML，則是用於建立網站的標記式語言，
 透過網頁瀏覽器的讀取，可以將其轉換成視覺化的網站。
 雖然它不算是程式語言的一種，卻是架構網站的重要根基。
@@ -15,20 +15,21 @@
 \end{figure}
 
 \section{Node.js}\label{s2.2}
-Node.js是一個能夠在伺服器端執行JavaScript的Open Source跨平台執行環境，讓JavaScript這種程式語言不僅僅只能在操作使用者端的程式碼。
+Node.js\cite{Node.js}是一個能夠在伺服器端執行JavaScript的Open Source跨平台執行環境，讓JavaScript這種程式語言不僅僅只能在操作使用者端的程式碼。
 它是讓使用者把僅能在瀏覽器執行JavaScript的限制，改成可以透過電腦中的終端介面來直接執行JavaScript程式碼。
 而node.js是一個輕量的framework，它裡面的每個JavaScript檔案都會被視為一個module，使用者可以用可下載的或可自己撰寫的模組來實現自己想要的功能。
 
 \subsection{cherrio}\label{s2.2.1}
 cherrio是在Node.js的一個模塊，實現了把jQuery中Selector輕量化的功能，需要先讀入HTML進行解析，並使用選擇器找出所需要的元件節點來作客置化的操作。
-例如:若需要進行爬蟲的話，需要先讀入一整個完整的網頁HTML，並限制元件的條件來找出該元件來讀出該文字內容。
+例如:若需要進行爬蟲的話，需要先讀入一整個完整的網頁HTML，並利用元件的條件來找出該元件來讀出該文字內容。
 
 \subsection{Diff}\label{s2.2.2}
-Diff是在Node.js的一個模塊，本論文取用的Hiff開源程式庫是以該模塊為基礎而開發的，利用其中的API來做兩個參數中的比較並顯出是否有差異，參數的類型可以是字元陣列...等等不同類別。
+Diff是在Node.js的一個模塊，本論文取用的Hiff開源程式庫\cite{Hiff}是以該模塊為基礎而開發的，
+利用其中的API來做兩個參數中的比較並顯出是否有差異，參數的類型可以是字元陣列...等等不同類別。
 
 \section{DOM-based Locators}\label{s2.3}
 如果要去抓取網頁其中一個物件，並使我們可以透過程式對它進行各式各樣的操作，
-方法基本上可以分類成三種:
+方法基本上可以分類成三種\cite{Web-Locators}:
 
 \indent
 1. Coordinate-based locators: 使用座標定位。
@@ -41,15 +42,19 @@ Diff是在Node.js的一個模塊，本論文取用的Hiff開源程式庫是以�
 
 \indent
 本論文中談論的情境是以穩定性較高的DOM-based locators來操作其中的物件，其中DOM在此指的是網頁中的樹狀結構HTML文件結構。
-而利用此定位實現的技術即為XPath (XML Path Language)。
-
+而利用此定位實現的技術即為XPath (XML Path Language)\cite{Xpath}。
 
 \section{XML Path Language (XPath)}\label{s2.4}
 XML Path Language (XPath) 是一種用來尋找XML文件中一個或多個節點位置的查詢語言。
-以XML中樹狀結構為基礎，讓使用者用一個附帶多個條件的表達式，找到是否有符合這些條件的路徑。
+以XML中樹狀結構為基礎，
+讓使用者用一個附帶多個條件的表達式，
+找到是否有符合這些條件的路徑，
+通常程式使用介面是由HTML構成的，
+而HTML結構屬於XML結構的一種，
+所以在網頁自動化測試中經常使用XPath定位找出元件位置\cite{Test-Case-Aging-By-Xpath}並對該元件進行操作。。
 
-\indent
-在Xpath表達式中，最常見的是路徑表達式。
+
+在Xpath表達式中，最常見的是路徑表達式\cite{Xpath-Selenium-Selectors}。
 路徑表達式是從一個XML節點到另一個節點或一組節點的步驟順序。
 如下圖表示，從HTML起始節點「ul」到屬性id為second-level的節點「li」，再從節點「li」到節點「div」，
 其路徑表達式為\colorbox{lightgray}{/ul/li[@id="second-level"]/div}                                                                                                                                                                                                                                                   
@@ -62,7 +67,7 @@ XML Path Language (XPath) 是一種用來尋找XML文件中一個或多個節點
 \end{figure}
 
 路徑表達式通常由三個元件設定來組成的，
-以圖2.2的路徑表達式為例:
+以圖\ref{f2.2}的路徑表達式為例:
 
 \begin{itemize}
 \item[●] 一個 Axis。代表搜尋的方向，例如:路徑表達式中的\colorbox{lightgray}{/}
@@ -70,18 +75,9 @@ XML Path Language (XPath) 是一種用來尋找XML文件中一個或多個節點
 \item[●] 零個或多個 Predicate。描述搜尋節點的條件，藉此可以過濾出需要的節點，例如:\colorbox{lightgray}{/li[@id="second-level"]}
 \end{itemize}
 
-% 如圖XXX的HTML結構為例為例，如果需要利用Xpath來定位到[...]的element，將此架構利用這三個元件來一個Xpath表達式。
-% \begin{itemize}
-%     \item[●] Axis為\colorbox{lightgray}{//}，代表搜尋方向為父節點往子節點搜尋，並搜尋所有子孫節點。
-%     \item[●] 指定節點名稱為 div 的節點
-%     \item[●] 限制該節點有屬性class且屬性值為XXX
-% \end{itemize}
-
-% (上述的例子需要補上一張圖)
-
-\section{Chrome Developer tools}\label{s2.5}
+\section{Chrome Developer Tools}\label{s2.5}
 基於桌機瀏覽器市占排行，本論文選用市佔率第一個Chrome使用。
-在瀏覽器的頁面中，可以點擊功能鍵F12，即可打開它的頁面。
+在瀏覽器的頁面中，可以點擊功能鍵F12，即可打開Chrome Developer Tools\cite{Chrome-Developer-Tools}。
 本工具最常用的四個功能模塊為:
 \begin{itemize}
     \item[●] 元素（Elements）:主要可以展示出該網站的當下HTML檔，以及每個元素對應的CSS屬性...等等細部設定，也可以及時修改當下的檔案，查看若更改會有什麼情況。
@@ -100,7 +96,7 @@ XML Path Language (XPath) 是一種用來尋找XML文件中一個或多個節點
 \section{Chrome Extension}\label{s2.6}
 
 瀏覽器除了有本身基本的功能之外，如果使用者還有其他需求的話，可以去網路商城下載擴充套件或自己撰寫相關程式來讓瀏覽器可以達到使用者額外的需求。
-一般來說擴充元件都是用諸如HTML、CSS和JavaScript的網路技術，另外有些還會透過瀏覽器的API來做溝通及變換畫面。
+一般來說擴充元件\cite{Chrome-Extension}\cite{Chrome-Extension-Thesis}都是用諸如HTML、CSS和JavaScript的網路技術，另外有些還會透過瀏覽器的API來做溝通及變換畫面。
 例如:目前市面上有很多人使用網頁版的Google翻譯來解決一般人難以讀懂英文文章的困擾，
 但每次都需要跳轉到網頁才可以翻譯，
 Google翻譯擴充套件能讓使用者在當下的畫面把文字圈選起來，利用程式判斷出圈起來文字並進行翻譯，
@@ -124,9 +120,16 @@ Chrome瀏覽器提供能讓使用者和網頁互動的元件，有畫面可見�
 在擴充元件的架構中，根據不同的時機，也有不同的腳本來專門處理同類型的事件，以下列出常用腳本所負責的功能:
 \begin{itemize}
     \item[●] Background Script: 一個擴充元件中，專門在背景頁面中執行的腳本，通常是處理程式中的主要邏輯。
-    \item[●] Content Script: 在每個網頁頁面(Tab)中，和擴充元件溝通的管道，該腳本會被瀏覽器放入當下頁面的HTML裡面。
-    \item[●] Popup Script:瀏覽器中右上角有個擴充元件的頁面按鈕，內部有個獨立的頁面，可以在裡面處理獨立的資訊和畫面。
+    \item[●] Content Script: 作為Inspected window和擴充元件其他腳本溝通的管道，
+    可以利用此腳本操控指定網頁下的元件或建立元件的監聽器，
+    進而提供與網頁內容的相關功能。
+    \item[●] Popup Script: 瀏覽器中右上角有個擴充元件的頁面按鈕，內部有個獨立的頁面，可以在裡面處理獨立的資訊和畫面。
+    \item[●] DevTools Script: 在瀏覽器的Developer Tools中，可以建立子頁面來建立自訂義的功能或透過其他工具頁面來取得相關開發者訊息。
 \end{itemize}
+
+如圖\ref{f2.5}所示，一個擴充程式擁有一個background Page、多個content script和多個DevTools page的Panels...等等其他的頁面，
+所有的擴充程式腳本除了Content script需要先指定好要與哪個Tab Id的Tab Content script溝通外，其餘的都可以自由的互相溝通。
+
 不同的腳本中都有獨立的Scope，可以在內部存儲變數，但它們是不能直接存取對方的資料的，
 例如:
 Popup Script想要Background Script運算完的結果，
@@ -137,7 +140,7 @@ Background Script才知道需要運算了並運算結束後結果回傳給Popup.
 \indent
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{picture/ch2-extension-script.png}
-    \caption{Manifest安裝檔範例}
+    \includegraphics[width=0.9\textwidth]{picture/ch2-extension-script-relation.png}
+    \caption{擴充程式腳本之關係圖}
     \label{f2.5}
 \end{figure}
