@@ -47,7 +47,6 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage{pdfpages}
-\usepackage{makecell}
 
 \definecolor{light-gray}{gray}{0.95}
 
@@ -64,6 +63,9 @@
 \input{def.tex}
 
 \begin{document}
+\includepdf[pages={1}]{bookname_front_and_back_covers.pdf}
+\includepdf[pages={2}]{bookname_front_and_back_covers.pdf}
+
 \includepdf[pages={1}]{bookname.pdf}
 
 \AddToShipoutPicture{\WatermarkPicture}                     % 加入浮水印
